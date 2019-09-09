@@ -23,32 +23,72 @@ $("#add-train-btn").on("click", function(event){
     event.preventDefault();
 
 
- // Grabs user input
-var trainName = $("#train-name-input").val().trim();
-var destinationInput = $("#destination-input").val().trim();
-var startTime = moment($("#time-input").val().trim(), "MMhh");
-var frequencyInput = $("#frequency-input").val().trim();
+    // Grabs user input
+    var trainName = $("#train-name-input").val().trim();
+    var destinationInput = $("#destination-input").val().trim();
+    var startTime = moment($("#time-input").val().trim(), "MMhh");
+    var frequencyInput = $("#frequency-input").val().trim();
 
-var newTrain = {
-    name: trainName,
-    destination: destinationInput,
-    time: startTime,
-    frequency: frequencyInput,
-};
+    var newTrain = {
+        name: trainName,
+        destination: destinationInput,
+        time: startTime,
+        frequency: frequencyInput,
+    };
 
-database.ref().push(newTrain);
+    database.ref().push(newTrain);
 
-console.log(newTrain.name);
-console.log(newTrain.destination);
-console.log(newTrain.time);
-console.log(newTrain.frequency);
+    console.log(newTrain.name);
+    console.log(newTrain.destination);
+    console.log(newTrain.time);
+    console.log(newTrain.frequency);
 
-alert("New train successfully added");
+    alert("New train successfully added");
 
-// Clears all of the text-boxes
-$("#train-name-input").val("");
-$("#destination-input").val("");
-$("#time-input").val("");
-$("#frequency-input").val("");
+    // Clears all of the text-boxes
+    $("#train-name-input").val("");
+    $("#destination-input").val("");
+    $("#time-input").val("");
+    $("#frequency-input").val("");
 
+});
+
+database.ref().on("child_added", function(childSnapshot) {
+    console.log(childSnapshot.val());
+
+    // Store everything into a variable.
+    var trainName = childSnapshot.val().name;
+    var destinationInput = childSnapshot.val().destination;
+    var startTime = childSnapshot.val().time;
+    var frequencyInput = childSnapshot.val().frequency;
+
+    // Employee Info
+    console.log(trainName);
+    console.log(destinationInput);
+    console.log(startTime);
+    console.log(frequencyInput);
+    
+    var startTimePretty = moment.unix(startTime).format("HHmm");
+
+    // Calculate the months worked using hardcore math
+    // To calculate the months worked
+    var empMonths = moment().diff(moment(empStart, "X"), "months");
+    console.log(empMonths);
+
+    // Calculate the total billed rate
+    var empBilled = empMonths * empRate;
+    console.log(empBilled);
+
+    // Create the new row
+    var newRow = $("<tr>").append(
+        $("<td>").text(empName),
+        $("<td>").text(empRole),
+        $("<td>").text(empStartPretty),
+        $("<td>").text(empMonths),
+        $("<td>").text(empRate),
+        $("<td>").text(empBilled)
+    );
+
+// Append the new row to the table
+$("#schedule-table> tbody").append(newRow);
 });
